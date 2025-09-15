@@ -1,0 +1,9 @@
+q_head_type: last_token
+k_head_type: last_token
+cos_sim: true
+temperature: 0.1
+
+output_size: 1024
+mlp_hidden: null
+dropout: 0.1
+scaled_init: true

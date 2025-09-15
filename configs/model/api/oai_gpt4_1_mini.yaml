@@ -1,0 +1,10 @@
+name: openai
+model_type: llm
+is_async: false
+model_config:
+  model: gpt-4.1-mini-2025-04-14
+  use_vision: false
+  generation_config:
+    max_output_tokens: 4096
+    parallel_tool_calls: false
+    temperature: 1

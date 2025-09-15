@@ -1,0 +1,9 @@
+name: critic_actor
+
+max_size: 10000
+
+discount_factor: 1
+normalize_returns: false
+normalize_advantages: false
+negative_returns: false
+returns_to_probs: null

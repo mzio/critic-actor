@@ -1,20 +1,25 @@
 name: gpqa
 dataset_config:
   path: "Idavidrein/gpqa"
-  name: "gpqa_main"  # we switch between these
+  name: "gpqa_extended"
   cache_dir: "${oc.env:ROOT_DIR}/data"
 
 prompt_column: "Question"
 answer_column: "Correct Answer"
 remove_columns: null
 keep_columns: null
-system_prompt: ""
+system_prompt: "default"
 prompt_prefix: "What is the correct answer to this question:\n\n"
-prompt_suffix: "\n\nReason through your answer step-by-step. Then, based on your reasoning, provide the single most likely answer choice. Answer in the format \"The correct answer is (insert answer here).\""
+prompt_suffix: ""  # "\n\nReason through your answer step-by-step. Then, based on your reasoning, provide the single most likely answer choice. Answer in the format \"The correct answer is (insert answer here).\""
 
 val_split_size: 0.1
 
-max_steps: 20
+max_turns: 10
 max_tries: 1
 split: train
 seed: 0
+
+data_process_config:
+  load_from_cache_file: false
+  num_proc: 4
+  with_indices: true

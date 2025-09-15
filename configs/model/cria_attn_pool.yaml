@@ -1,0 +1,9 @@
+q_head_type: attn_pool
+k_head_type: attn_pool
+cos_sim: false
+temperature: 0.1
+
+output_size: 1024
+mlp_hidden: null
+dropout: 0.1
+scaled_init: true
