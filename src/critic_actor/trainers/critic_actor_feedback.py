@@ -266,6 +266,10 @@ class CriticActorFeedbackTrainer(CriticActorTrainer):
                             if policy_content == "":
                                 policy_content += "<think>\n"
                             policy_content += f"{_text}\n\n"
+                            if _idx + 1 == len(action_list):
+                                prior_feedback_messages.append(
+                                    {"role": "user", "content": policy_content}
+                                )
 
                         elif action.type == "function_call":
                             if policy_content != "":
@@ -378,12 +382,12 @@ class CriticActorFeedbackTrainer(CriticActorTrainer):
                             feedback_messages = [
                                 {"role": "user", "content": content}
                             ]
-                        else:
-                            feedback_messages = [
-                                {"role": "user", "content": obs.messages[-1]["content"]}
-                            ]
-                        
-                        prior_feedback_messages.extend(feedback_messages)
+                            prior_feedback_messages.extend(feedback_messages)
+                        # else:
+                        #     feedback_messages = [
+                        #         {"role": "user", "content": obs.messages[-1]["content"]}
+                        #     ]
+                            # prior_feedback_messages.extend(feedback_messages)
                     
                     # Get feedback
                     if not done:
@@ -429,8 +433,8 @@ class CriticActorFeedbackTrainer(CriticActorTrainer):
                             for _ in range(self.num_return_sequences)
                         ]
                         # Generate potential feedback
+                        feedback_gen_config = deepcopy(self.generation_config)
                         if self.feedback_truncation is not None:
-                            feedback_gen_config = deepcopy(self.generation_config)
                             feedback_gen_config["truncation"] = self.feedback_truncation
 
                         print_header("** Generating potential feedback... **")
