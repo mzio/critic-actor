@@ -1,0 +1,36 @@
+name: hle
+dataset_config:
+  path: "cais/hle"
+  # cache_dir: ${oc.env:ROOT_DIR}/data
+  cache_dir: "/home/ubuntu/data"
+
+grader_model_config:
+  name: openai
+  is_async: false
+  model_config:
+    model: gpt-4.1-2025-04-14
+    use_vision: false
+    generation_config:
+      max_output_tokens: 4096
+      parallel_tool_calls: false
+      temperature: 1
+
+prompt_column: "question"
+answer_column: "answer"
+remove_columns: null
+keep_columns: null
+system_prompt: "default"
+prompt_prefix: ""
+prompt_suffix: ""
+
+val_split_size: 0.1
+
+max_turns: 10
+max_tries: 1
+split: train
+seed: 0
+
+data_process_config:
+  load_from_cache_file: false
+  # num_proc: 1
+  with_indices: false
