@@ -3,12 +3,12 @@ name: critic_actor_feedback
 
 discount_factor: 0.9
 feedback_system_prompt_choice: socratic
-feedback_reasoning_effort: high
+feedback_reasoning_effort: medium
 feedback_on_reasoning: true
 feedback_truncation: auto
 
 num_return_sequences: 4
-reasoning_effort: minimal
+reasoning_effort: medium
 single_response_only: false
 truncation: auto
 
