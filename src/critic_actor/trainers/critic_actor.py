@@ -26,7 +26,7 @@ from ..environments import Environment
 from ..llm import LLM
 from ..model.critic_actor import CriticActor
 from ..model.checkpoints import load_model_checkpoint
-from ..replay_buffer.critic_actor import CriticActorReplayBuffer, CriticActorEpisodeStep
+from ..replay_buffer.critic_actor import CriticActorReplayBuffer
 from ..utils.logging import print_header
 
 from .base import BaseTrainer
@@ -42,17 +42,19 @@ class CriticActorTrainer(BaseTrainer):
         generation_config: dict[str, Any],
         reasoning_effort: str,
         include_reasoning_for_critic: bool = False,
-        truncation: str = "disabled",
+        single_response_only: bool = False,
+        truncation: str = "auto",  # or "disabled"
         use_early_stopping: bool = False,
         **kwargs: Any,
     ) -> None:
         super().__init__(generation_config=generation_config, **kwargs)
         self.num_return_sequences = num_return_sequences
         self.generation_config = generation_config
-        self.generation_config["truncation"] = truncation  # for OAI models currently
 
         self.reasoning_effort = reasoning_effort
         self.include_reasoning_for_critic = include_reasoning_for_critic
+        self.single_response_only = single_response_only
+        self.truncation = truncation
 
         self.replay_buffer_config = kwargs.get("replay_buffer_config", {})
         self.dataloader_config = kwargs.get("dataloader_config", {})
@@ -108,9 +110,8 @@ class CriticActorTrainer(BaseTrainer):
         # GRPO-like defaults
         replay_buffer.discount_factor = 1.0
         replay_buffer.normalize_returns = False
-        replay_buffer.normalize_advantages = True
+        replay_buffer.normalize_advantages = False
         replay_buffer.negative_returns = False
-        # replay_buffer.advantage_fn = compute_advantages
 
         all_batch_gen_metrics = {}
         reasoning = (
@@ -144,7 +145,7 @@ class CriticActorTrainer(BaseTrainer):
                 }
                 sample_id = unique_sample_id
                 obs, info = env.reset(
-                    sample_id=data_sample_id,
+                    sample_idx=data_sample_id,
                     generation_idx=generation_idx,
                 )
                 done = False
@@ -159,8 +160,13 @@ class CriticActorTrainer(BaseTrainer):
                 while not done:
                     # Messages for critic (critic_model, critic_head)
                     query_state_message = prior_critic_messages
+                    try:
+                        _user_content = obs.messages[-1]["content"]
+                    except Exception as e:
+                        print(e)
+                        _user_content = ""
                     key_action_messages = [
-                        [{"role": "user", "content": ""}]
+                        [{"role": "user", "content": _user_content}]
                         for _ in range(self.num_return_sequences)
                     ]
                     # Messages for actor LLM
@@ -170,6 +176,11 @@ class CriticActorTrainer(BaseTrainer):
                         prior_messages=obs.prior_messages,
                         interleave=False,
                     )
+
+                    if self.verbose:
+                        print_header(f"Message inputs (Data Sample {data_sample_id} | Gen {generation_idx} | Step {timestep})")
+                        for _idx, _msg in enumerate(messages):
+                            print(f"{_idx}. {str(_msg)[:1024]}")
 
                     # Generate actions
                     print_header("* Generating actions... *")
@@ -183,6 +194,7 @@ class CriticActorTrainer(BaseTrainer):
                                 num_return_sequences=self.num_return_sequences, 
                                 reasoning=reasoning,
                                 **self.generation_config,
+                                truncation=self.truncation,
                             )
                             llm_action_lists = [
                                 llm.get_actions(response) for response in llm_responses

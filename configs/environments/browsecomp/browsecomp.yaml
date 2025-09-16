@@ -1,7 +1,8 @@
 name: browsecomp_plus
 dataset_config:
   path: decrypted_browsecomp_plus.jsonl
-  cache_dir: "${oc.env:ROOT_DIR}/data"
+  # cache_dir: ${oc.env:ROOT_DIR}/data
+  cache_dir: "/home/ubuntu/data"
 
 grader_model_config:
   name: openai

@@ -2,7 +2,9 @@ name: gpqa
 dataset_config:
   path: "Idavidrein/gpqa"
   name: "gpqa_extended"
-  cache_dir: "${oc.env:ROOT_DIR}/data"
+  # cache_dir: ${oc.env:ROOT_DIR}/data
+  cache_dir: "/home/ubuntu/data"
+
 
 prompt_column: "Question"
 answer_column: "Correct Answer"

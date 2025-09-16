@@ -23,7 +23,10 @@ SYSTEM_PROMPT_CHOICES = {
     )
 }
 
-USER_PROMPT = "Ok, please proceed. Remember you can respond with a plan, a reflection or summary of your progress, your next reasoning step, etc."
+USER_PROMPT = (
+    "Ok, please proceed. Use your past reasoning to respond with a plan, "
+    "a reflection or summary of your progress, or your next reasoning step."
+)
 
 
 class GPQAEnv(Environment):
@@ -48,12 +51,14 @@ class GPQAEnv(Environment):
         data_process_config: dict[str, Any] = None,
         truncation_message: str = "Sorry, too many turns.",
         reasoning_steps: int = 5,
+        **kwargs: Any,
     ):
         super().__init__(
             max_turns=max_turns,
             max_tries=max_tries,
             seed=seed,
             truncation_message=truncation_message,
+            **kwargs,
         )
         # Setup dataset
         self.dataset_config = dataset_config
@@ -209,7 +214,7 @@ class GPQAEnv(Environment):
                         )
                     messages.append({
                         "role": "user",
-                        "content": USER_PROMPT,
+                        "content": user_prompt,
                     })
 
         metadata["timestep"] = timestep + 1

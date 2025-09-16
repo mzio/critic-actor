@@ -1,0 +1,11 @@
+# Llama 3.1 8B Instruct
+# -> Needs a few-shot example first for thinking before function-calling
+name: hf_transformer
+model_type: huggingface
+model_config:
+  pretrained_model_name_or_path: "meta-llama/Llama-3.1-8B-Instruct"
+  cache_dir: "${oc.env:ROOT_DIR}/models"
+  device_map: auto
+  low_cpu_mem_usage: true
+  dtype: bfloat16
+  # attn_implementation: sdpa

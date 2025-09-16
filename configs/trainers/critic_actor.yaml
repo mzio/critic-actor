@@ -4,6 +4,7 @@ name: critic_actor
 num_return_sequences: 4
 reasoning_effort: minimal
 single_response_only: false
+truncation: auto
 
 num_steps: 1000
 samples_per_prompt: 8

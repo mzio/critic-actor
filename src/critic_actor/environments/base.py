@@ -81,6 +81,7 @@ class Environment:
         self.pretrained_model_config = pretrained_model_config
         self.seed = seed
         self.verbose = verbose
+        self.truncation_message = truncation_message
 
     def __len__(self) -> int:
         raise NotImplementedError
