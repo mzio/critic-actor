@@ -42,7 +42,7 @@ uv run python main.py \
 --lr 1e-4 \
 --weight_decay 0 \
 --max_turns 10 \
---replicate 0 --seed 0 --verbose
+--replicate 1 --seed 0 --verbose
 ```
 
 GPQA with GPT-4.1-mini
@@ -65,11 +65,5 @@ uv run python main.py \
 --lr 1e-4 \
 --weight_decay 0 \
 --max_turns 10 \
---replicate 0 --seed 0 --verbose
-```
-
-BrowseComp with GPT-4.1-mini
-
-```bash
-
+--replicate 1 --seed 0 --verbose
 ```

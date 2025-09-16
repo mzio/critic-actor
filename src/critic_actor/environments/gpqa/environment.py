@@ -16,17 +16,23 @@ from .grader import score_response
 SYSTEM_PROMPT_CHOICES = {
     "default": (
         "You are a step-by-step reasoning assistant."
-        "\n\nFor a given question, you should **ONLY** respond with your *NEXT* thought." 
-        " This can be a plan, a reflection, your next step in reasoning, etc.\n"
-        "Only when the user allows, based on your reasoning, provide the single most likely answer choice." 
+        "\n\nFor a given question, respond with **ONLY** your *next-step* thought. "
+        # " thought. the next result of your prior reasoning steps." 
+        " This can be a plan, a reflection, or the result of your prior reasoning steps."
+        " You *must* pay attention to your prior reasoning: if you previously said you will do"
+        "do something, do it.\n\n"
+        "Only when the user *allows*, provide the single most likely answer choice based on your reasoning." 
         " Answer in the format \"The correct answer is (insert answer here).\""
     )
 }
 
 USER_PROMPT = (
     "Ok, please proceed. Use your past reasoning to respond with a plan, "
-    "a reflection or summary of your progress, or your next reasoning step."
+    "a reflection or summary of your progress, your next reasoning step, "
+    "or your carrying out prior plans. Remember if you previously said you would do "
+    "something, you must do it."
 )
+# USER_PROMPT = "Ok, please proceed. Carry out your prior plans."
 
 
 class GPQAEnv(Environment):
@@ -180,12 +186,13 @@ class GPQAEnv(Environment):
         
         # Parse actions (messages and tool calls)
         for action_idx, action in enumerate(parsed_actions):
+            print(f"(DEBUGGING action_idx {action_idx + 1} / {len(parsed_actions)})\n", action)
             if action.type in ["message", "reasoning"]:
                 info["num_messages"] += 1
                 if (
                     action.type == "message"
                     and action_idx + 1 == len(parsed_actions)
-                    and "The correct answer is: " in action.text
+                    and "The correct answer is " in action.text
                 ):
                     # Last action was an answer submission
                     reward = score_response(

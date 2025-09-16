@@ -286,6 +286,8 @@ class CriticActorTrainer(BaseTrainer):
                         padding=True,
                         enable_thinking=True,
                     )
+                    # _critic_input_keys = critic_tokenizer.apply_chat_template(key_action_messages, add_generation_prompt=False, tokenize=False, padding=True, enable_thinking=True)
+                    # breakpoint()
 
                     if self.verbose:
                         _title = (

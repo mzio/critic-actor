@@ -413,7 +413,6 @@ class ReplayBuffer:
             data_dict["old_logprobs"] = torch.tensor(data_dict["old_logprobs"])
             self.add(**data_dict)
 
-
     def clean_up(self) -> None:
         """
         Get replay buffer ready for next training update
