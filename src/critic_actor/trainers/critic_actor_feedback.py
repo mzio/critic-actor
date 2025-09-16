@@ -194,7 +194,7 @@ class CriticActorFeedbackTrainer(CriticActorTrainer):
 
                 # Chat history for feedback LLM
                 prior_feedback_messages = [
-                    {"role": "user", "content": "Please give me an challenging question to solve."},
+                    {"role": "user", "content": "Please give me a challenging question to solve."},
                     {"role": "assistant", "content": deepcopy(obs.messages[-1]["content"])},
                 ]
 
@@ -250,8 +250,8 @@ class CriticActorFeedbackTrainer(CriticActorTrainer):
                             # prior_critic_messages.append(
                             #     {"role": "user", "content": action.text}
                             # )
-                            if policy_content == "":
-                                policy_content += "<think>\n"
+                            # if policy_content == "":
+                            #     policy_content += "<think>\n"
                             policy_content += f"{action.text}\n\n"
 
                         elif action.type != "reasoning" and action.type != "function_call":
@@ -263,8 +263,8 @@ class CriticActorFeedbackTrainer(CriticActorTrainer):
                             # prior_critic_messages.append(
                             #     {"role": "user", "content": _text}
                             # )
-                            if policy_content == "":
-                                policy_content += "<think>\n"
+                            # if policy_content == "":
+                            #     policy_content += "<think>\n"
                             policy_content += f"{_text}\n\n"
                             if _idx + 1 == len(action_list):
                                 prior_feedback_messages.append(
@@ -272,8 +272,8 @@ class CriticActorFeedbackTrainer(CriticActorTrainer):
                                 )
 
                         elif action.type == "function_call":
-                            if policy_content != "":
-                                policy_content += "\n</think>\n\n"
+                            # if policy_content != "":
+                            #     policy_content += "\n</think>\n\n"
                             _text = f"<tool_call>\n{action.text}\n</tool_call>"
                             policy_content += f"{_text}\n\n"
                             
@@ -346,8 +346,8 @@ class CriticActorFeedbackTrainer(CriticActorTrainer):
                                 print_advantages=self.verbose,
                             )
 
-                            if len(returns) == 1:
-                                breakpoint()
+                            # if len(returns) == 1:
+                            #     breakpoint()
 
                             # breakpoint()
                             # Can use first-step return to benchmark perf
@@ -518,6 +518,7 @@ class CriticActorFeedbackTrainer(CriticActorTrainer):
                                         num_good += 1
 
                                 assert num_good == self.num_return_sequences
+                                sampled_feedback = True
                             except Exception as e:
                                 print(f"Error generating feedback: {e}")
                                 sampled_feedback = False
