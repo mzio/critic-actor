@@ -19,6 +19,11 @@ def load_env(name: str, **kwargs: any) -> Environment:
 
         return BrowseCompPlusEnv(**kwargs)
 
+    elif name == "hle":
+        from .hle.environment import HLEEnv
+
+        return HLEEnv(**kwargs)
+
     else:
         raise ValueError(f"Sorry environment '{name}' not implemented.")
 
