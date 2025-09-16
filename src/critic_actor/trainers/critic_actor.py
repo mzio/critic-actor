@@ -32,6 +32,20 @@ from ..utils.logging import print_header
 from .base import BaseTrainer
 
 
+def advantage_fn(
+    returns: torch.Tensor,
+    **kwargs: Any,
+) -> torch.Tensor:
+    """
+    Compute advantages from returns and values
+    - use GRPO-like advantage function
+    """
+    mu, std = returns.mean(), returns.std()
+    if std == 0:
+        return torch.zeros_like(returns)  # no variance
+    return (returns - mu) / std
+
+
 class CriticActorTrainer(BaseTrainer):
     """
     Critic-Actor Trainer
@@ -68,11 +82,18 @@ class CriticActorTrainer(BaseTrainer):
         # -> (default off bc early stopping on loss may not make sense here)
         self.use_early_stopping = use_early_stopping
 
-    def get_replay_buffer(self, **kwargs: Any) -> CriticActorReplayBuffer:
+    def get_replay_buffer(self, **replay_buffer_config: Any) -> CriticActorReplayBuffer:
         """
         Return a Critic-Actor replay buffer object
+        -> By default, we use discount_factor = 1 and GRPO-like "advantage"
         """
-        return CriticActorReplayBuffer(**self.replay_buffer_config)
+        replay_buffer = CriticActorReplayBuffer(**replay_buffer_config)
+        replay_buffer.discount_factor = 1.0
+        replay_buffer.normalize_returns = False
+        replay_buffer.normalize_advantages = False
+        replay_buffer.negative_returns = False
+        replay_buffer.advantage_fn = advantage_fn
+        return replay_buffer
 
     def get_update_data(
         self,
@@ -106,12 +127,6 @@ class CriticActorTrainer(BaseTrainer):
         critic_model = env.critic_model
         critic_head = model
         critic_tokenizer = tokenizer
-
-        # GRPO-like defaults
-        replay_buffer.discount_factor = 1.0
-        replay_buffer.normalize_returns = False
-        replay_buffer.normalize_advantages = False
-        replay_buffer.negative_returns = False
 
         all_batch_gen_metrics = {}
         reasoning = (

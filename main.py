@@ -230,10 +230,15 @@ def main() -> None:
         run_url=args.run_url,
     )
     # Get replay buffer and optimizers
-    # replay_buffer = trainer.get_replay_buffer(model)
-    replay_buffer = get_replay_buffer(**replay_buffer_config)
+    replay_buffer = trainer.get_replay_buffer(**replay_buffer_config)
     optimizer = trainer.get_optimizer(critic_actor)
     scheduler = trainer.get_scheduler(optimizer)
+
+    print("replay_buffer.discount_factor:", replay_buffer.discount_factor)
+    print("replay_buffer.normalize_returns:", replay_buffer.normalize_returns)
+    print("replay_buffer.normalize_advantages:", replay_buffer.normalize_advantages)
+    print("replay_buffer.negative_returns:", replay_buffer.negative_returns)
+    print("replay_buffer.advantage_fn:", replay_buffer.advantage_fn)
 
     critic_actor, replay_buffer, unique_sample_id = trainer.train(
         model=critic_actor,

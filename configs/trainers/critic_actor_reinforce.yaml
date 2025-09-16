@@ -1,6 +1,7 @@
 # Default critic-actor training
-name: critic_actor
+name: critic_actor_reinforce
 
+discount_factor: 1.0
 num_return_sequences: 4
 reasoning_effort: minimal
 single_response_only: false
@@ -13,7 +14,7 @@ max_tries: 1
 
 replay_buffer_config:
   name: critic_actor
-  discount_factor: 0.9
+  discount_factor: 1.0
   normalize_returns: false
   normalize_advantages: false
 

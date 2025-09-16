@@ -153,6 +153,7 @@ def get_configs(
             "max_tries",
             "max_steps",
             # LLM / Critic-Actor
+            "discount_factor",
             "num_return_sequences",
             "reasoning_effort",
             "single_response_only",
