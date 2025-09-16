@@ -31,7 +31,7 @@ def get_args() -> argparse.Namespace:
     Load and process experiment arguments
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("--project_name", type=str, default="rdbench-cria")
+    parser.add_argument("--project_name", type=str, default="critic-actor")
 
     # Main configs (see ./configs)
     parser.add_argument("--llm_config", type=str)
@@ -113,7 +113,8 @@ def get_args() -> argparse.Namespace:
         "logger_entity", "no_wandb", "no_neptune",
         "config_dir", "verbose", "debug",
     ]
-    args.run_name = get_run_name(args, prefix="arc", ignore_args=_ignore_args)
+    args.run_name = get_run_name(args, prefix="cria", ignore_args=_ignore_args)
+    args.run_name = args.run_name.replace("/", "_")  # some configs are nested
     args.checkpoint_name = f"{args.run_name}.pt"
 
     # Setup checkpoint directories
