@@ -202,6 +202,8 @@ class GPQAEnv(Environment):
                     )
                     reward = float(reward)  # convert bool to float for reward
                     done = True
+                    info["try_step"] += 1
+                    updated_try_step = True
 
                     user_content = "Correct!" if reward == 1 else "Incorrect!"
                     messages.append({

@@ -413,6 +413,8 @@ class BrowseCompPlusEnv(Environment):
 
                     reward = float(reward)  # convert bool to float for reward
                     done = True
+                    info["try_step"] += 1
+                    updated_try_step = True
 
                     if reward == 1:
                         user_content = "Correct!"
