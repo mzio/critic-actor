@@ -1,0 +1,75 @@
+# Critic-actor training for feedback
+name: critic_actor_feedback
+
+discount_factor: 0.9
+feedback_system_prompt_choice: default
+feedback_reasoning_effort: high
+feedback_on_reasoning: true
+feedback_truncation: auto
+
+num_return_sequences: 4
+reasoning_effort: minimal
+single_response_only: false
+truncation: auto
+
+num_steps: 1000
+samples_per_prompt: 8
+prompts_per_update: 8
+max_tries: 1
+
+replay_buffer_config:
+  name: critic_actor
+  discount_factor: 1.0
+  normalize_returns: false
+  normalize_advantages: false
+
+update_num_steps: null
+update_num_epochs: 4
+update_batch_size: 32
+gradient_accumulation_steps: 32
+update_eval_step: 4
+
+update_dataset_config: 
+  name: critic_actor
+  pos_advantage_only: false
+  negative_reward: true
+  neg_return_to_p: false
+  include_next_obs: false
+  next_obs_advantage: false
+  next_state_role: 'tool'  # or 'user'
+  seed: 0
+  val_size: 0.1
+  shuffle_train: true
+
+dataloader_config:
+  batch_size: 1
+  num_workers: 2
+  drop_last: false
+  pin_memory: true
+
+optimizer_config:
+  optim: adamw_torch_fused
+  lr: 0.0001
+  weight_decay: 1e-5
+
+scheduler_config:
+  lr_scheduler_type: reduce_lr_on_plateau
+  mode: min
+  factor: 0.1
+  patience: 10
+  min_lr: 1.0e-05
+
+eval_step: null
+eval_batch_step: 1
+eval_generation_config: null
+eval_samples_per_prompt: 1
+eval_max_tries: 1
+max_eval_samples: 32
+return_best_model: true
+early_stopping_limit: 10
+keep_best_eval_model: false
+
+checkpoint_dir: null  # to fill in
+generation_dir: null  # to fill in
+run_name: null        # to fill in
+verbose: true

@@ -14,4 +14,8 @@ def load_trainer(name: str, **kwargs: any):
         from .critic_actor_reinforce import CriticActorTrainer
         return CriticActorTrainer(name=name, **kwargs)
 
+    elif name == "critic_actor_feedback":
+        from .critic_actor_feedback import CriticActorTrainer
+        return CriticActorTrainer(name=name, **kwargs)
+
     raise NotImplementedError(f"Sorry trainer '{name}' not implemented yet.")
